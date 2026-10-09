@@ -1,0 +1,2711 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+        >
+
+        <title>RICALDE FAMILIA</title>
+
+        <link rel="stylesheet" href="style.css">
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+
+        <link
+            rel="preconnect"
+            href="https://fonts.gstatic.com"
+            crossorigin
+        >
+
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+            rel="stylesheet"
+        >
+    </head>
+
+    <body>
+
+        <!-- =====================================================
+             CINEMATIC INTRO LOADER
+        ===================================================== -->
+        <div
+            class="site-intro"
+            id="siteIntro"
+            role="status"
+            aria-live="polite"
+            aria-label="Loading Ricalde Familia"
+        >
+            <div class="site-intro-grid" aria-hidden="true"></div>
+            <div class="site-intro-glow site-intro-glow-one" aria-hidden="true"></div>
+            <div class="site-intro-glow site-intro-glow-two" aria-hidden="true"></div>
+
+            <!-- A single, subtle black-hole effect forms only after ENTER is clicked. -->
+            <div class="site-intro-singularity" aria-hidden="true">
+                <span class="site-intro-singularity-disk"></span>
+            </div>
+
+            <div class="site-intro-content">
+                <div class="site-intro-emblem">
+                    <span class="intro-orbit intro-orbit-one" aria-hidden="true"></span>
+                    <span class="intro-orbit intro-orbit-two" aria-hidden="true"></span>
+                    <span class="intro-orbit intro-orbit-three" aria-hidden="true"></span>
+                    <img
+                        src="RICAUDE_glitch_animated_9.5MB.gif"
+                        alt=""
+                        class="site-intro-logo"
+                    >
+                </div>
+
+                <p class="site-intro-kicker">EST. 2026 <span></span> THE FAMILY ARCHIVE</p>
+                <h1 class="site-intro-title">RICALDE <span>FAMILIA</span></h1>
+                <p class="site-intro-tagline">ONE NAME. ONE LEGACY.</p>
+
+                <div class="site-intro-progress" aria-hidden="true">
+                    <span></span>
+                </div>
+                <p class="site-intro-status">INITIALIZING THE LEGACY</p>
+                <button type="button" class="site-intro-enter" id="enterSiteButton">
+                    ENTER THE SITE <span aria-hidden="true">→</span>
+                </button>
+            </div>
+
+            <div class="site-intro-corner site-intro-corner-left">RCLD // 001</div>
+            <div class="site-intro-corner site-intro-corner-right">LOYALTY · RESPECT · LEGACY</div>
+        </div>
+
+        <!-- The visitor must click to enter. This handler works even if the main script has an error. -->
+        <script>
+            (function () {
+                var intro = document.getElementById("siteIntro");
+                var enterButton = document.getElementById("enterSiteButton");
+                if (!intro || !enterButton)
+                    return;
+                document.body.classList.add("intro-loading");
+                var dismissed = false;
+                /* A short, synthesized cinematic whoosh. It uses the click gesture,
+                   so no separate audio file or autoplay permission is required. */
+                function playEntrySound() {
+                    var AudioContextCtor = window.AudioContext || window.webkitAudioContext;
+                    if (!AudioContextCtor)
+                        return;
+                    var context;
+                    try {
+                        context = new AudioContextCtor();
+                        if (context.state === "suspended") {
+                            var resumeResult = context.resume();
+                            if (resumeResult && typeof resumeResult.catch === "function") {
+                                resumeResult.catch(function () { });
+                            }
+                        }
+                        var now = context.currentTime;
+                        var master = context.createGain();
+                        master.gain.setValueAtTime(0.0001, now);
+                        master.gain.exponentialRampToValueAtTime(0.24, now + 0.12);
+                        master.gain.setValueAtTime(0.20, now + 0.42);
+                        master.gain.exponentialRampToValueAtTime(0.0001, now + 1.36);
+                        master.connect(context.destination);
+                        /* Filtered noise creates a soft, inward-pulling space-warp. */
+                        var duration = 1.42;
+                        var bufferLength = Math.floor(context.sampleRate * duration);
+                        var noiseBuffer = context.createBuffer(1, bufferLength, context.sampleRate);
+                        var channel = noiseBuffer.getChannelData(0);
+                        for (var i = 0; i < bufferLength; i++) {
+                            var progress = i / bufferLength;
+                            var envelope = Math.sin(Math.PI * Math.min(1, progress)) * (1 - progress * 0.22);
+                            channel[i] = (Math.random() * 2 - 1) * envelope;
+                        }
+                        var noise = context.createBufferSource();
+                        noise.buffer = noiseBuffer;
+                        var filter = context.createBiquadFilter();
+                        filter.type = "lowpass";
+                        filter.Q.setValueAtTime(1.15, now);
+                        filter.frequency.setValueAtTime(760, now);
+                        filter.frequency.exponentialRampToValueAtTime(82, now + 1.22);
+                        var noiseGain = context.createGain();
+                        noiseGain.gain.setValueAtTime(0.0001, now);
+                        noiseGain.gain.exponentialRampToValueAtTime(0.48, now + 0.11);
+                        noiseGain.gain.setValueAtTime(0.34, now + 0.46);
+                        noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 1.32);
+                        noise.connect(filter);
+                        filter.connect(noiseGain);
+                        noiseGain.connect(master);
+                        noise.start(now);
+                        noise.stop(now + duration);
+                        /* Deep descending tone supplies the black-hole pull, not music. */
+                        var sub = context.createOscillator();
+                        var subGain = context.createGain();
+                        sub.type = "sine";
+                        sub.frequency.setValueAtTime(88, now);
+                        sub.frequency.exponentialRampToValueAtTime(25, now + 1.20);
+                        subGain.gain.setValueAtTime(0.0001, now);
+                        subGain.gain.exponentialRampToValueAtTime(0.42, now + 0.10);
+                        subGain.gain.exponentialRampToValueAtTime(0.0001, now + 1.30);
+                        sub.connect(subGain);
+                        subGain.connect(master);
+                        sub.start(now);
+                        sub.stop(now + 1.34);
+                        /* A quieter lower undertone adds weight without becoming a melody. */
+                        var undertone = context.createOscillator();
+                        var undertoneGain = context.createGain();
+                        undertone.type = "sine";
+                        undertone.frequency.setValueAtTime(43, now);
+                        undertone.frequency.exponentialRampToValueAtTime(17, now + 1.18);
+                        undertoneGain.gain.setValueAtTime(0.0001, now);
+                        undertoneGain.gain.exponentialRampToValueAtTime(0.16, now + 0.16);
+                        undertoneGain.gain.exponentialRampToValueAtTime(0.0001, now + 1.28);
+                        undertone.connect(undertoneGain);
+                        undertoneGain.connect(master);
+                        undertone.start(now);
+                        undertone.stop(now + 1.31);
+                        window.setTimeout(function () {
+                            if (context && context.state !== "closed") {
+                                var closeResult = context.close();
+                                if (closeResult && typeof closeResult.catch === "function") {
+                                    closeResult.catch(function () { });
+                                }
+                            }
+                        }, 1750);
+                    }
+                    catch (error) {
+                        /* Entry must still work when Web Audio is unavailable. */
+                    }
+                }
+                /* Background music is intentionally NOT started during entry.
+                   Each member track starts only after a visitor interacts with a profile. */
+                function enterSite() {
+                    if (dismissed)
+                        return;
+                    dismissed = true;
+                    /* Always land on HOME after the intro, even if the page was opened
+                       with a previous #members link or a browser-restored scroll position. */
+                    try {
+                        if (window.history && window.history.replaceState) {
+                            window.history.replaceState(null, document.title, window.location.pathname + window.location.search + "#home");
+                        }
+                    }
+                    catch (error) {
+                        /* Home landing must not block the entry animation. */
+                    }
+                    window.scrollTo(0, 0);
+                    /* Explicitly ensure the member audio element is silent on entry. */
+                    var memberAudio = document.getElementById("memberAudio");
+                    if (memberAudio) {
+                        memberAudio.pause();
+                        try {
+                            memberAudio.currentTime = 0;
+                        }
+                        catch (error) { }
+                    }
+                    /* Short entry SFX only; do not start any background/member music here. */
+                    playEntrySound();
+                    enterButton.disabled = true;
+                    enterButton.setAttribute("aria-label", "Entering Ricalde Familia");
+                    intro.classList.add("is-entering");
+                    intro.setAttribute("aria-busy", "true");
+                    document.body.classList.add("site-enter-transition");
+                    /* Let the logo sweep / portal animation play before fading the intro away. */
+                    window.setTimeout(function () {
+                        intro.classList.add("is-hidden");
+                        intro.setAttribute("aria-hidden", "true");
+                        intro.removeAttribute("aria-busy");
+                        document.body.classList.remove("intro-loading");
+                        document.body.classList.add("site-entered");
+                        window.setTimeout(function () {
+                            if (intro.parentNode)
+                                intro.parentNode.removeChild(intro);
+                            document.body.classList.remove("site-enter-transition");
+                            document.dispatchEvent(new Event("ricalde:site-entered"));
+                        }, 420);
+                    }, 1580);
+                }
+                enterButton.addEventListener("click", enterSite);
+            })();
+        </script>
+
+        <!-- =====================================================
+             NAVBAR
+        ===================================================== -->
+
+        <header class="navbar">
+
+            <div class="nav-container">
+
+                <!-- =================================================
+                     LOGO
+                ================================================== -->
+
+                <a
+                    href="#home"
+                    class="logo"
+                    aria-label="Ricalde Familia Home"
+                >
+
+                    <img
+                        src="RICAUDE_glitch_animated_9.5MB.gif"
+                        alt="Ricalde Familia Logo"
+                    >
+
+                    <span>
+                        RICALDE FAMILIA
+                    </span>
+
+                </a>
+
+                <!-- =================================================
+                     NAVIGATION
+                ================================================== -->
+
+                <nav
+                    class="nav-links"
+                    aria-label="Main navigation"
+                >
+
+                    <a href="#home">Home</a>
+
+                    <a href="#members">Members</a>
+
+                    <a href="#allies">Allies</a>
+
+                    <a href="#memories">Memories</a>
+
+                    <a href="#cities">Cities</a>
+
+                </nav>
+
+                <button
+                    class="menu-button"
+                    id="menuButton"
+                    type="button"
+                    aria-label="Open navigation menu"
+                >
+                    ☰
+                </button>
+
+            </div>
+
+        </header>
+
+        <main>
+
+            <!-- =====================================================
+                 HOME
+            ===================================================== -->
+
+            <section
+                class="hero"
+                id="home"
+            >
+
+                <div class="hero-content">
+
+                    <p class="small-label">
+                        RICALDE FAMILIA // EST. 2026
+                    </p>
+
+                    <h1>
+                        One blood.
+                        <br>
+
+                        One name.
+                        <br>
+
+                        <span>
+                            One legacy.
+                        </span>
+                    </h1>
+
+                    <p class="hero-description">
+
+                        Every legacy begins with a foundation.
+
+                        Ours began with three names —
+                        Zoro, Gab, and Keso.
+
+                        What started as three founders became
+                        something greater than a name.
+
+                        It became a family built on loyalty,
+                        respect, brotherhood, and memories
+                        that continue to shape every generation.
+
+                        The founders built the legacy.
+                        The first generation protected it.
+                        The generations that follow will carry
+                        it further.
+
+                        RICALDE FAMILIA.
+
+                    </p>
+
+                    <div class="hero-buttons">
+
+                        <a
+                            href="#members"
+                            class="button button-primary"
+                        >
+                            Explore Members
+                        </a>
+
+                        <a
+                            href="#memories"
+                            class="button button-secondary"
+                        >
+                            Enter Memories
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <div class="hero-image">
+
+                    <div class="image-card">
+
+                        <div class="hero-logo-watermark">
+                            RICALDE
+                        </div>
+
+                        <img
+                            src="ricalde1204.png"
+                            alt="Ricalde Familia Logo"
+                        >
+
+                        <div class="hero-card-label">
+                            RICALDE FAMILIA
+                        </div>
+
+                        <div class="hero-card-subtitle">
+                            ONE NAME • ONE LEGACY
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- =====================================================
+                 MEMBERS
+            ===================================================== -->
+
+            <section
+                id="members"
+                class="section members-section"
+            >
+
+                <div class="section-head">
+
+                    <div class="eyebrow">
+                        THE FAMILY
+                    </div>
+
+                    <h2>
+                        MEMBERS
+                    </h2>
+
+                    <p>
+                        Hover a profile to play its music.
+                        Click a profile to open its dossier.
+                    </p>
+
+                    <input
+                        id="memberSearch"
+                        type="search"
+                        placeholder="Search Ricalde..."
+                        aria-label="Search Ricalde members"
+                    >
+
+                </div>
+
+                <!-- =====================================================
+                     FOUNDER
+                ===================================================== -->
+
+                <div class="group-title">
+                    FOUNDER
+                </div>
+
+                <div class="member-grid brothers">
+
+                    <!-- =================================================
+                         MEMBER 01 — GAB
+                    ================================================== -->
+
+                    <article
+                        class="profile gab member-01"
+                        data-member-id="01"
+                        data-name="gab"
+                        data-music="gabBackground.mp3"
+                        data-role="FOUNDER"
+                        data-bio="One of the original founders of Ricalde Familia. Part of the foundation that established the name, loyalty, and legacy."
+                    >
+
+                        <div
+                            class="cover p1 cover-01"
+                            data-cover-id="01"
+                        >
+
+                            <img
+                                src="gabBanner.gif"
+                                alt="Gab Banner"
+                            >
+
+                        </div>
+
+                        <div class="avatar">
+
+                            <img
+                                src="gabAvatar.jpg"
+                                alt="Gab"
+                            >
+
+                        </div>
+
+                        <h3>
+                            Gab
+                        </h3>
+
+                        <span>
+                            @gab.exec
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 02 — ZORO
+                    ================================================== -->
+
+                    <article
+                        class="profile zoro member-02"
+                        data-member-id="02"
+                        data-name="zoro"
+                        data-music="zoroBackground.mp3"
+                        data-role="FOUNDER"
+                        data-bio="One of the three original founders who helped establish the Ricalde Familia and shape its identity."
+                    >
+
+                        <div
+                            class="cover p1 cover-02"
+                            data-cover-id="02"
+                        >
+                            <img src="zoroBackground.gif" alt="Zoro Background">
+
+                        </div>
+
+                        <div class="avatar">
+
+                            <img
+                                src="bj.jpg"
+                                alt="Zoro"
+                            >
+
+                        </div>
+
+                        <h3>
+                            Zoro
+                        </h3>
+
+                        <span>
+                            @pablo_ricalde
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 03 — KESO
+                    ================================================== -->
+
+                    <article
+                        class="profile keso member-03"
+                        data-member-id="03"
+                        data-name="keso"
+                        data-music="kesoBackground.mp3"
+                        data-role="FOUNDER"
+                        data-bio="A founding member of Ricalde Familia and part of the original bloodline that helped shape the family."
+                    >
+
+                        <div
+                            class="cover p1 cover-03"
+                            data-cover-id="03"
+                        >
+
+                            <img
+                                src="keso.gif"
+                                alt="Keso Banner"
+                            >
+
+                        </div>
+
+                        <div class="avatar">
+
+                            <img
+                                src="keso.png"
+                                alt="Keso"
+                            >
+
+                        </div>
+
+                        <h3>
+                            Keso
+                        </h3>
+
+                        <span>
+                            @em1.nems
+                        </span>
+
+                    </article>
+
+                </div>
+
+                <!-- =====================================================
+                     1ST GENERATION
+                ===================================================== -->
+
+                <div class="group-title">
+                    1ST GENERATION
+                </div>
+
+                <div
+                    id="memberGrid1"
+                    class="member-grid"
+                >
+
+                    <!-- =================================================
+                         MEMBER 04 — HARLEY
+                    ================================================== -->
+
+                    <article
+                        class="profile harley member-04"
+                        data-member-id="04"
+                        data-name="harley"
+                        data-music="harleyBackground.mp3"
+                        data-role="1ST GENERATION"
+                        data-bio="A first-generation presence with a bold spirit, helping establish the attitude and identity behind the Ricalde legacy."
+                    >
+
+                        <div
+                            class="cover p1 cover-04"
+                            data-cover-id="04"
+                        >
+                        <img src="spookyxharley_4k.gif" alt="Harley Background">
+
+                        </div>
+
+                        <div class="avatar">
+
+                            <img
+                                src="harleyProfile.png"
+                                alt="Harley"
+                            >
+
+                        </div>
+
+                        <h3>
+                            Harley
+                        </h3>
+
+                        <span>
+                            @_chxe
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 05 — PABLO
+                    ================================================== -->
+
+                    <article
+                        class="profile pablo member-05"
+                        data-member-id="05"
+                        data-name="pablo"
+                        data-music="pablooo.m4a"
+                        data-role="1ST GENERATION"
+                        data-bio="A founding-era name in the Familia, bringing a distinct presence to the roots from which the Ricalde story grows."
+                    >
+
+                        <div
+                            class="cover p11 cover-05"
+                            data-cover-id="05"
+                        >
+
+                            <img
+                                src="pabloBanner.gif"
+                                alt="Pablo Banner"
+                            >
+
+                        </div>
+
+                        <div class="avatar">
+
+                            <img
+                                src="pabloProfile1.jpg"
+                                alt="Pablo"
+                            >
+
+                        </div>
+
+                        <h3>
+                            Pablo
+                        </h3>
+
+                        <span>
+                            @weaaaeee
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 06 — KHRISS
+                    ================================================== -->
+
+                    <article
+                        class="profile khriss member-06"
+                        data-member-id="06"
+                        data-name="khriss"
+                        data-music="khrissBackground.mp3"
+                        data-role="1ST GENERATION"
+                        data-bio="Part of the original wave, carrying an independent identity while helping shape the foundation of Ricalde Familia."
+                    >
+
+                        <div
+                            class="cover p11 cover-06"
+                            data-cover-id="06"
+                        >
+
+                            <img
+                                src="khrissBackground.png"
+                                alt="Khriss Banner"
+                            >
+
+                        </div>
+
+                        <div class="avatar">
+
+                            <img
+                                src="khrissProfile.jpg"
+                                alt="Khriss"
+                            >
+
+                        </div>
+
+                        <h3>
+                            Khriss
+                        </h3>
+
+                        <span>
+                            @info143
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 07 — ERO
+                    ================================================== -->
+
+                    <article
+                        class="profile ero member-07"
+                        data-member-id="07"
+                        data-name="ero"
+                        data-music="eroBackground1.mp3"
+                        data-role="1ST GENERATION"
+                        data-bio="A first-generation trailblazer whose name adds its own edge to the history and character of the Familia."
+                    >
+
+                        <div
+                            class="cover p4 cover-07"
+                            data-cover-id="07"
+                        >
+
+                            <img
+                                src="eroBackground.gif"
+                                alt="Ero Banner"
+                            >
+
+                        </div>
+
+                        <div class="avatar">
+
+                            <img
+                                src="eroProfile.jpg"
+                                alt="Ero"
+                            >
+
+                        </div>
+
+                        <h3>
+                            Ero
+                        </h3>
+
+                        <span>
+                            @oreo_kataga
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 08 — ALEX
+                    ================================================== -->
+
+                    <article
+                        class="profile alex member-08"
+                        data-member-id="08"
+                        data-name="alex"
+                        data-music="alexBackground.mp3"
+                        data-role="1ST GENERATION"
+                        data-bio="A member of the founding generation, representing the individuality and early spirit that define Ricalde Familia."
+                    >
+
+                        <div
+                            class="cover p5 cover-08"
+                            data-cover-id="08"
+                        >
+
+                            <img
+                                src="alexBackground.webp"
+                                alt="Alex Banner"
+                            >
+
+                        </div>
+
+                        <div class="avatar">
+
+                            <img
+                                src="alexProfile.png"
+                                alt="Alex Profile"
+                            >
+
+                        </div>
+
+                        <h3>
+                            Alex
+                        </h3>
+
+                        <span>
+                            @namohhh69_67592
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 09 — LUX
+                    ================================================== -->
+
+                    <article
+                        class="profile lux member-09"
+                        data-member-id="09"
+                        data-name="lux"
+                        data-music="luxBackground.mp3"
+                        data-role="1ST GENERATION"
+                        data-bio="From the first chapter of the Familia, bringing a recognizable presence to the legacy built by the original generation."
+                    >
+
+                        <div
+                            class="cover p3 cover-09"
+                            data-cover-id="09"
+                        >
+
+                            <img
+                                src="luxBackground.gif"
+                                alt="Lux Banner"
+                            >
+
+                        </div>
+
+                        <div class="avatar">
+                            <img src="luxProfile.png" alt="Lux Profile">
+                        </div>
+
+                        <h3>
+                            Lux
+                        </h3>
+
+                        <span>
+                            @stfu66666
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 10 — MIKEY
+                    ================================================== -->
+
+                    <article
+                        class="profile mikey member-10"
+                        data-member-id="10"
+                        data-name="mikey"
+                        data-music="mikeyBackground.mp4"
+                        data-role="1ST GENERATION"
+                        data-bio="An original-generation member with a style of his own, adding another distinct mark to the Ricalde name."
+                    >
+
+                        <div
+                            class="cover p6 cover-10"
+                            data-cover-id="10"
+                        >
+                            <video
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                            >
+
+                                <source
+                                    src="mikeyBackground.mp4"
+                                    type="video/mp4"
+                                >
+
+                            </video>
+
+                        </div>
+
+                        <div class="avatar">
+                            <img src="mikeyProfile.png" alt="Mikey Profile">
+                        </div>
+
+                        <h3>
+                            Mikey
+                        </h3>
+
+                        <span>
+                            @_mikey.lazcano
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 11 — MIKOY
+                    ================================================== -->
+
+                    <article
+                        class="profile mikoy member-11"
+                        data-member-id="11"
+                        data-name="mikoy"
+                        data-music="music/mikoy.mp3"
+                        data-role="1ST GENERATION"
+                        data-bio="A first-generation original whose place in the Familia reflects the roots and lasting identity of Ricalde."
+                    >
+
+                        <div
+                            class="cover p7 cover-11"
+                            data-cover-id="11"
+                        >
+
+                            <img
+                                src="ricalde.gif"
+                                alt="Mikoy Banner"
+                            >
+
+                        </div>
+
+                        <div class="avatar">
+                            M
+                        </div>
+
+                        <h3>
+                            Mikoy
+                        </h3>
+
+                        <span>
+                            @.dipunggol.
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 12 — JUAN
+                    ================================================== -->
+
+                    <article
+                        class="profile juan member-12"
+                        data-member-id="12"
+                        data-name="juan"
+                        data-music="music/juan.mp3"
+                        data-role="1ST GENERATION"
+                        data-bio="Part of the first generation, carrying the family name with a personal identity and a legacy-minded spirit."
+                    >
+
+                        <div
+                            class="cover p8 cover-12"
+                            data-cover-id="12"
+                        >
+
+                            <img
+                                src="ricalde.gif"
+                                alt="Juan Banner"
+                            >
+
+                        </div>
+
+                        <div class="avatar">
+                            J
+                        </div>
+
+                        <h3>
+                            Juan
+                        </h3>
+
+                        <span>
+                            @juansalvaje019
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 13 — KAISER
+                    ================================================== -->
+
+                    <article
+                        class="profile kaiser member-13"
+                        data-member-id="13"
+                        data-name="kaiser"
+                        data-music="music/kaiser.mp3"
+                        data-role="1ST GENERATION"
+                        data-bio="An original member of Ricalde Familia, standing among the names that shaped its earliest chapter."
+                    >
+
+                        <div
+                            class="cover p9 cover-13"
+                            data-cover-id="13"
+                        >
+
+                            <img
+                                src="ricalde.gif"
+                                alt="Kaiser Banner"
+                            >
+
+                        </div>
+
+                        <div class="avatar">
+                            R
+                        </div>
+
+                        <h3>
+                            Kaiser
+                        </h3>
+
+                        <span>
+                            @rgottalovekaiser
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 14 — GENESIS
+                    ================================================== -->
+
+                    <article
+                        class="profile genesis member-14"
+                        data-member-id="14"
+                        data-name="genesis"
+                        data-music="genesisBackground.mp3"
+                        data-role="1ST GENERATION"
+                        data-bio="A first-generation member whose name symbolizes a beginning, contributing a unique presence to the Familia’s origins."
+                    >
+
+                        <div
+                            class="cover p10 cover-14"
+                            data-cover-id="14"
+                        >
+
+                            <img
+                                src="genesisBackground.png"
+                                alt="Genesis Banner"
+                            >
+
+                        </div>
+
+                        <div class="avatar">
+                            <img src="genesisProfile.jpg" alt="Genesis Profile">
+                        </div>
+
+                        <h3>
+                            Genesis
+                        </h3>
+
+                        <span>
+                            @aimingtobebetter
+                        </span>
+
+                    </article>
+
+                </div>
+
+                <!-- =====================================================
+                     2ND GENERATION
+                ===================================================== -->
+
+                <div class="group-title">
+                    2ND GENERATION
+                </div>
+
+                <div
+                    id="memberGrid2"
+                    class="member-grid"
+                >
+
+                    <!-- =================================================
+                         MEMBER 15 — MINA
+                    ================================================== -->
+
+                    <article
+                        class="profile mina member-15"
+                        data-member-id="15"
+                        data-name="mina"
+                        data-music="minaBackground.mp3"
+                        data-role="2ND GENERATION"
+                        data-bio="In the second generation, Mina connects the family roots with a new chapter shaped by her own branch of the Ricalde story."
+                    >
+
+                        <div
+                            class="cover p2 cover-15"
+                            data-cover-id="15"
+                        >
+
+                            <img
+                                src="minaBackground.gif"
+                                alt="Mina Background"
+                            >
+
+                        </div>
+
+                        <div class="avatar">
+                            M
+                        </div>
+
+                        <h3>
+                            Mina
+                        </h3>
+
+                        <span>
+                            @anim.gg
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 16 — HAILEY
+                    ================================================== -->
+
+                    <article
+                        class="profile hailey member-16"
+                        data-member-id="16"
+                        data-name="hailey"
+                        data-music="haileyBackground.mp3"
+                        data-role="2ND GENERATION"
+                        data-bio="A defining second-generation member whose growing family line links the old roots to the next wave of Ricalde names."
+                    >
+
+                        <div
+                            class="cover p3 cover-16"
+                            data-cover-id="16"
+                        >
+
+                            <video
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                            >
+
+                                <source
+                                    src="hailey.mp4"
+                                    type="video/mp4"
+                                >
+
+                            </video>
+
+                        </div>
+
+                        <div class="avatar">
+
+                            <img
+                                src="haileyProfile.jpg"
+                                alt="Hailey"
+                            >
+
+                        </div>
+
+                        <h3>
+                            Hailey
+                        </h3>
+
+                        <span>
+                            @_dontdothat.
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 17 — CHONGKID
+                    ================================================== -->
+
+                    <article
+                        class="profile chongkid member-17"
+                        data-member-id="17"
+                        data-name="chongkid"
+                        data-music="chongkidBackground.mp3"
+                        data-role="2ND GENERATION"
+                        data-bio="A second-generation member carrying forward the family connection while building a place of his own in the Ricalde story."
+                    >
+
+                        <div
+                            class="cover p9 cover-17"
+                            data-cover-id="17"
+                        >
+
+                            <img
+                                src="eroBackground.gif"
+                                alt="Chongkid Banner"
+                            >
+
+                        </div>
+
+                        <div class="avatar">
+
+                            <img
+                                src="chongkidProfile.jpg"
+                                alt="Chongkid"
+                            >
+
+                        </div>
+
+                        <h3>
+                            Chongkid
+                        </h3>
+
+                        <span>
+                            @youngblaze666
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 18 — TUSS
+                    ================================================== -->
+
+                    <article
+                        class="profile tuss member-18"
+                        data-member-id="18"
+                        data-name="tuss"
+                        data-music="tussBackground.mp3"
+                        data-role="2ND GENERATION"
+                        data-bio="From the second generation, Tuss represents the next chapter of the Familia and the continuity of its family ties."
+                    >
+
+                        <div
+                            class="cover p11 cover-18"
+                            data-cover-id="18"
+                        >
+
+                            <img
+                                src="tussBackground.png"
+                                alt="Tuss Banner"
+                            >
+
+                        </div>
+
+                        <div class="avatar">
+
+                            <img
+                                src="tussProfile.png"
+                                alt="Tuss"
+                            >
+
+                        </div>
+
+                        <h3>
+                            Tuss
+                        </h3>
+
+                        <span>
+                            @wtf.sxsazraaa
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 19 — YAZZ
+                    ================================================== -->
+
+                    <article
+                        class="profile yazz member-19"
+                        data-member-id="19"
+                        data-name="yaz"
+                        data-music="yazBackground.mp3"
+                        data-role="2ND GENERATION"
+                        data-bio="A second-generation name with a direct link to the earlier generation, adding another branch to the Ricalde legacy."
+                    >
+
+                        <div
+                            class="cover p11 cover-19"
+                            data-cover-id="19"
+                        >
+
+                            <img
+                                src="yazBackground.jpg"
+                                alt="Yaz Banner"
+                            >
+
+                        </div>
+
+                        <div class="avatar">
+
+                            <img
+                                src="yazProfile.jpg"
+                                alt="Yaz Profile"
+                            >
+
+                        </div>
+
+                        <h3>
+                            Yazz
+                        </h3>
+
+                        <span>
+                            @yzzhuh
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 20 — SELENE KAYE
+                    ================================================== -->
+
+                    <article
+                        class="profile selene member-20"
+                        data-member-id="20"
+                        data-name="selene"
+                        data-music="seleneBackground.mp3"
+                        data-role="2ND GENERATION"
+                        data-bio="Part of the second generation, Selene Kaye brings her own chapter to the family story and carries its connections forward."
+                    >
+
+                        <div
+                            class="cover p11 cover-20"
+                            data-cover-id="20"
+                        >
+
+                            <video
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                            >
+
+                                <source
+                                    src="seleneBanner.mp4"
+                                    type="video/mp4"
+                                >
+
+                            </video>
+
+                        </div>
+
+                        <div class="avatar">
+
+                            <img
+                                src="selene.jpg"
+                                alt="Selene Kaye"
+                            >
+
+                        </div>
+
+                        <h3>
+                            Selene Kaye
+                        </h3>
+
+                        <span>
+                            @idkaee
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 21 — ELLE
+                    ================================================== -->
+
+                    <article
+                        class="profile elle member-21"
+                        data-member-id="21"
+                        data-name="elle"
+                        data-music="elleMusic.mp3"
+                        data-role="2ND GENERATION"
+                        data-bio="A second-generation member whose place in the family adds another distinct thread to the growing Ricalde story."
+                    >
+
+                        <div
+                            class="cover p11 cover-21"
+                            data-cover-id="21"
+                        >
+
+                            <img
+                                src="elleBanner.gif"
+                                alt="Elle Banner"
+                            >
+
+                        </div>
+
+                        <div class="avatar">
+
+                            <img
+                                src="elleProfile.gif"
+                                alt="Elle"
+                            >
+
+                        </div>
+
+                        <h3>
+                            Elle
+                        </h3>
+
+                        <span>
+                            @elleee_5
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 22 — NIKOLAI
+                    ================================================== -->
+
+                    <article
+                        class="profile nikolai member-22"
+                        data-member-id="22"
+                        data-name="nikolai"
+                        data-music="music/miko.mp3"
+                        data-role="2ND GENERATION"
+                        data-bio="Nikolai belongs to the second generation, connecting his own identity with the family line that came before him."
+                    >
+
+                        <div
+                            class="cover p8 cover-22"
+                            data-cover-id="22"
+                        >
+
+                            <img
+                                src="ricalde.gif"
+                                alt="Nikolai Background"
+                            >
+
+                        </div>
+
+                        <div class="avatar">
+                            <img src="RICAUDE_glitch_animated_9.5MB.gif" alt="Nikolai Profile">
+                        </div>
+
+                        <h3>
+                            Nikolai
+                        </h3>
+
+                        <span>
+                            @nikolai.rcld
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 23 — GEORGE
+                    ================================================== -->
+
+                    <article
+                        class="profile george member-23"
+                        data-member-id="23"
+                        data-name="george"
+                        data-music="music/saki.mp3"
+                        data-role="2ND GENERATION"
+                        data-bio="A second-generation member whose family roots tie him to the foundation while his own story continues the legacy."
+                    >
+
+                        <div
+                            class="cover p4 cover-23"
+                            data-cover-id="23"
+                        >
+
+                            <img
+                                src="ricalde.gif"
+                                alt="George"
+                            >
+
+                        </div>
+
+                        <div class="avatar">
+
+                            <img
+                                src="RICAUDE_glitch_animated_9.5MB.gif"
+                                alt="George"
+                            >
+
+                        </div>
+
+                        <h3>
+                            George
+                        </h3>
+
+                        <span>
+                            @george.rcld
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 24 — CHISU
+                    ================================================== -->
+
+                    <article
+                        class="profile chisu member-24"
+                        data-member-id="24"
+                        data-name="chisu"
+                        data-music="music/szaki.mp3"
+                        data-role="2ND GENERATION"
+                        data-bio="From the second generation, Chisu adds an individual name and presence to the expanding Ricalde family tree."
+                    >
+
+                        <div
+                            class="cover p5 cover-24"
+                            data-cover-id="24"
+                        >
+
+                            <img
+                                src="ricalde.gif"
+                                alt="Chisu"
+                            >
+
+                        </div>
+
+                        <div class="avatar">
+
+                            <img
+                                src="RICAUDE_glitch_animated_9.5MB.gif"
+                                alt="Chisu"
+                            >
+
+                        </div>
+
+                        <h3>
+                            Chisu
+                        </h3>
+
+                        <span>
+                            @Chisu.rcld
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 25 — NUTZ
+                    ================================================== -->
+
+                    <article
+                        class="profile nutz member-25"
+                        data-member-id="25"
+                        data-name="nutz"
+                        data-music="music/ysabel.mp3"
+                        data-role="2ND GENERATION"
+                        data-bio="A second-generation member bringing a distinctive identity to the next chapter of the Familia’s shared story."
+                    >
+
+                        <div
+                            class="cover p6 cover-25"
+                            data-cover-id="25"
+                        >
+
+                            <img
+                                src="ricalde.gif"
+                                alt="Nutz"
+                            >
+
+                        </div>
+
+                        <div class="avatar">
+
+                            <img
+                                src="RICAUDE_glitch_animated_9.5MB.gif"
+                                alt="Nutz"
+                            >
+
+                        </div>
+
+                        <h3>
+                            Nutz
+                        </h3>
+
+                        <span>
+                            @nutz.rcld
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 26 — THELMO
+                    ================================================== -->
+
+                    <article
+                        class="profile thelmo member-26"
+                        data-member-id="26"
+                        data-name="thelmo"
+                        data-music="music/jace.mp3"
+                        data-role="2ND GENERATION"
+                        data-bio="Thelmo represents the second generation’s growing branches, carrying family connections into a new chapter."
+                    >
+
+                        <div
+                            class="cover p7 cover-26"
+                            data-cover-id="26"
+                        >
+
+                            <img
+                                src="ricalde.gif"
+                                alt="Thelmo"
+                            >
+
+                        </div>
+
+                        <div class="avatar">
+
+                            <img
+                                src="RICAUDE_glitch_animated_9.5MB.gif"
+                                alt="Thelmo"
+                            >
+
+                        </div>
+
+                        <h3>
+                            Thelmo
+                        </h3>
+
+                        <span>
+                            @thelmo.rcld
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 27 — DAN
+                    ================================================== -->
+
+                    <article
+                        class="profile dan member-27"
+                        data-member-id="27"
+                        data-name="dan"
+                        data-music="danBackground.mp3"
+                        data-role="2ND GENERATION"
+                        data-bio="A second-generation member with a place in the expanding family line and a story uniquely his own."
+                    >
+
+                        <div
+                            class="cover p10 cover-27"
+                            data-cover-id="27"
+                        >
+
+                            <img
+                                src="danBackground.gif"
+                                alt="Dan Background"
+                            >
+
+                        </div>
+
+                        <div class="avatar">
+
+                            <img
+                                src="danProfile.png"
+                                alt="Dan Profile"
+                            >
+
+                        </div>
+
+                        <h3>
+                            Dan
+                        </h3>
+
+                        <span>
+                            @dan.rcld
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 28 — SEAN
+                    ================================================== -->
+
+                    <article
+                        class="profile sean member-28"
+                        data-member-id="28"
+                        data-name="sean"
+                        data-music="music/kai.mp3"
+                        data-role="2ND GENERATION"
+                        data-bio="Part of the second generation, Sean adds another personality and branch to the continuing Ricalde legacy."
+                    >
+
+                        <div
+                            class="cover p11 cover-28"
+                            data-cover-id="28"
+                        >
+
+                            <img
+                                src="ricalde.gif"
+                                alt="Sean"
+                            >
+
+                        </div>
+
+                        <div class="avatar">
+
+                            <img
+                                src="RICAUDE_glitch_animated_9.5MB.gif"
+                                alt="Sean"
+                            >
+
+                        </div>
+
+                        <h3>
+                            Sean
+                        </h3>
+
+                        <span>
+                            @sean.rcld
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 29 — MIZUKI
+                    ================================================== -->
+
+                    <article
+                        class="profile mizuki member-29"
+                        data-member-id="29"
+                        data-name="mizuki"
+                        data-music="music/kai.mp3"
+                        data-role="2ND GENERATION"
+                        data-bio="Mizuki carries a second-generation connection to the family roots while adding a distinct name to its history."
+                    >
+
+                        <div
+                            class="cover p11 cover-29"
+                            data-cover-id="29"
+                        >
+
+                            <img
+                                src="ricalde.gif"
+                                alt="Mizuki"
+                            >
+
+                        </div>
+
+                        <div class="avatar">
+
+                            <img
+                                src="RICAUDE_glitch_animated_9.5MB.gif"
+                                alt="Mizuki"
+                            >
+
+                        </div>
+
+                        <h3>
+                            Mizuki
+                        </h3>
+
+                        <span>
+                            @mizuki.rcld
+                        </span>
+
+                    </article>
+
+                </div>
+
+                <!-- =====================================================
+                     3RD GENERATION
+                ===================================================== -->
+
+                <div class="group-title">
+                    3RD GENERATION
+                </div>
+
+                <div
+                    id="memberGrid3"
+                    class="member-grid"
+                >
+
+                    <!-- =================================================
+                         MEMBER 30 — ELYSE
+                    ================================================== -->
+
+                    <article
+                        class="profile elyse member-30"
+                        data-member-id="30"
+                        data-name="elyse"
+                        data-music="elyseBackground.mp3"
+                        data-role="3RD GENERATION"
+                        data-bio="A third-generation member growing from the family roots, bringing a fresh identity to the next wave of Ricalde Familia."
+                    >
+
+                        <div
+                            class="cover p2 cover-30"
+                            data-cover-id="30"
+                        >
+
+                            <img
+                                src="elyseBanner.gif"
+                                alt="Elyse"
+                            >
+
+                        </div>
+
+                        <div class="avatar">
+
+                            <img
+                                src="elyseProfile.png"
+                                alt="Elyse"
+                            >
+
+                        </div>
+
+                        <h3>
+                            Elyse
+                        </h3>
+
+                        <span>
+                            @sexbombely
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 31 — ESMI
+                    ================================================== -->
+
+                    <article
+                        class="profile esmi member-31"
+                        data-member-id="31"
+                        data-name="esmi"
+                        data-music="music/mina.mp3"
+                        data-role="3RD GENERATION"
+                        data-bio="From the third generation, Esmi represents a new branch of the family story shaped by the generations before her."
+                    >
+
+                        <div
+                            class="cover p2 cover-31"
+                            data-cover-id="31"
+                        ></div>
+
+                        <div class="avatar">
+                            Es
+                        </div>
+
+                        <h3>
+                            Esmi
+                        </h3>
+
+                        <span>
+                            @foilsickat2am
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 32 — AVA
+                    ================================================== -->
+
+                    <article
+                        class="profile ava member-32"
+                        data-member-id="32"
+                        data-name="ava"
+                        data-music="avaBackground.mp3"
+                        data-role="3RD GENERATION"
+                        data-bio="A third-generation member with an expanding family line, Ava connects the Ricalde name to a new set of stories."
+                    >
+
+                        <div
+                            class="cover p4 cover-32"
+                            data-cover-id="32"
+                        >
+
+                            <img
+                                src="avaBackground.gif"
+                                alt="Ava"
+                            >
+
+                        </div>
+
+                        <div class="avatar">
+
+                            <img
+                                src="ava.jpg"
+                                alt="Ava"
+                            >
+
+                        </div>
+
+                        <h3>
+                            Ava
+                        </h3>
+
+                        <span>
+                            @4ecstasy.
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 33 — BUNGO
+                    ================================================== -->
+
+                    <article
+                        class="profile bungo member-33"
+                        data-member-id="33"
+                        data-name="bungo"
+                        data-music="bungoBackground.mp3"
+                        data-role="3RD GENERATION"
+                        data-bio="Bungo belongs to the third generation, adding his own character to a family legacy that continues to grow."
+                    >
+
+                        <div
+                            class="cover p5 cover-33"
+                            data-cover-id="33"
+                        >
+
+                            <video
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                            >
+
+                                <source
+                                    src="bungoBackground.mp4"
+                                    type="video/mp4"
+                                >
+
+                            </video>
+
+                        </div>
+
+                        <div class="avatar">
+
+                            <img
+                                src="bungoProfile.png"
+                                alt="Bungo"
+                            >
+
+                        </div>
+
+                        <h3>
+                            Bungo
+                        </h3>
+
+                        <span>
+                            @bungopalku
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 34 — NEIL
+                    ================================================== -->
+
+                    <article
+                        class="profile neil member-34"
+                        data-member-id="34"
+                        data-name="neil"
+                        data-music="neilBackground.mp3"
+                        data-role="3RD GENERATION"
+                        data-bio="A third-generation member carrying the family connection forward while making room for his own chapter in the story."
+                    >
+
+                        <div
+                            class="cover p5 cover-34"
+                            data-cover-id="34"
+                        >
+
+                            <img
+                                src="ricalde.gif"
+                                alt="Neil"
+                            >
+
+                        </div>
+
+                        <div class="avatar">
+
+                            <img
+                                src="neilProfile.jpg"
+                                alt="Neil"
+                            >
+
+                        </div>
+
+                        <h3>
+                            Neil
+                        </h3>
+
+                        <span>
+                            @neilseo.
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 35 — BUSHA
+                    ================================================== -->
+
+                    <article
+                        class="profile busha member-35"
+                        data-member-id="35"
+                        data-name="busha"
+                        data-music="bushaBackground.mp3"
+                        data-role="3RD GENERATION"
+                        data-bio="Busha represents the third generation’s blend of family roots and new connections within the Ricalde Familia."
+                    >
+
+                        <div
+                            class="cover p6 cover-35"
+                            data-cover-id="35"
+                        >
+                            <img src="bushaBackground.webp" alt="Busha Background">
+                            ></div>
+
+                        <div class="avatar">
+                            <img src="bushaProfile.jpg" alt="Busha Profile">
+                        </div>
+
+                        <h3>
+                            Busha
+                        </h3>
+
+                        <span>
+                            @busha.wrldwide
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 36 — MADARA
+                    ================================================== -->
+
+                    <article
+                        class="profile madara member-36"
+                        data-member-id="36"
+                        data-name="madara"
+                        data-music="music/jace.mp3"
+                        data-role="3RD GENERATION"
+                        data-bio="A third-generation member whose place in the family tree reflects the growing links between branches of the Familia."
+                    >
+
+                        <div
+                            class="cover p7 cover-36"
+                            data-cover-id="36"
+                        >
+                            <img src="ricalde.gif" alt="Madara Background">
+                            ></div>
+
+                        <div class="avatar">
+                            <img src="RICAUDE_glitch_animated_9.5MB.gif" alt="Madara Profile">
+                        </div>
+
+                        <h3>
+                            Madara
+                        </h3>
+
+                        <span>
+                            @180.444.69.666
+                        </span>
+
+                    </article>
+
+                </div>
+
+                <!-- =====================================================
+                     4TH GENERATION
+                     MEMBERS 37–38
+                ===================================================== -->
+
+                <div class="group-title">
+                    4TH GENERATION
+                </div>
+
+                <div
+                    id="memberGrid4"
+                    class="member-grid member-grid-4th"
+                >
+
+                    <!-- =================================================
+                         MEMBER 37 — MARGA
+                    ================================================== -->
+
+                    <article
+                        class="profile marga member-37"
+                        data-member-id="37"
+                        data-name="marga"
+                        data-music="margaBackground.mp4"
+                        data-role="4TH GENERATION"
+                        data-bio="As part of the fourth generation, Marga stands in a newer chapter of the family story, connecting many names and branches."
+                    >
+
+                        <div
+                            class="cover p8 cover-37"
+                            data-cover-id="37"
+                        >
+
+                            <video
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                            >
+
+                                <source
+                                    src="margaBackground.mp4"
+                                    type="video/mp4"
+                                >
+
+                            </video>
+
+                        </div>
+
+                        <div class="avatar">
+
+                            <img
+                                src="margaProfile.gif"
+                                alt="Marga Profile"
+                            >
+
+                        </div>
+
+                        <h3>
+                            Marga
+                        </h3>
+
+                        <span>
+                            @margsiebb
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         MEMBER 38 — RALP
+                    ================================================== -->
+
+                    <article
+                        class="profile ralp member-38"
+                        data-member-id="38"
+                        data-name="ralp"
+                        data-music="ralpBackground.mp3"
+                        data-role="4TH GENERATION"
+                        data-bio="A fourth-generation member helping carry the Ricalde story onward, with family connections that link multiple branches together."
+                    >
+
+                        <div
+                            class="cover p9 cover-38"
+                            data-cover-id="38"
+                        >
+
+                            <img
+                                src="ralpBackground.gif"
+                                alt="Ralp Banner"
+                            >
+
+                        </div>
+
+                        <div class="avatar">
+
+                            <img
+                                src="ralpProfile.gif"
+                                alt="Ralp Profile"
+                            >
+
+                        </div>
+
+                        <h3>
+                            Ralp
+                        </h3>
+
+                        <span>
+                            @ralp1
+                        </span>
+
+                    </article>
+
+                    <!-- =================================================
+                         FUTURE MEMBER TEMPLATE — COPY FOR MEMBER 39+
+                    ==================================================
+
+                    <article
+                        class="profile member-39"
+                        data-member-id="39"
+                        data-name="member-name"
+                        data-music="memberMusic.mp3"
+                        data-role="4TH GENERATION"
+                        data-bio="A member of the fourth generation of Ricalde Familia."
+                    >
+
+                        <div
+                            class="cover p11 cover-39"
+                            data-cover-id="39"
+                        >
+
+                            <img
+                                src="memberBackground.jpg"
+                                alt="Member Banner"
+                            >
+
+                        </div>
+
+
+                        <div class="avatar">
+                            M
+                        </div>
+
+
+                        <h3>
+                            Member Name
+                        </h3>
+
+
+                        <span>
+                            @username
+                        </span>
+
+                    </article>
+
+                    -->
+
+                </div>
+
+                <!-- =====================================================
+                     ALLIES
+                ===================================================== -->
+
+                <section
+                    class="section allies-section"
+                    id="allies"
+                >
+
+                    <div class="section-heading allies-heading">
+
+                        <p class="small-label">
+                            OUR NETWORK
+                        </p>
+
+                        <h2>
+                            Allies
+                            <span>& connections.</span>
+                        </h2>
+
+                        <p class="section-note">
+                            The names beside us. The connections that helped shape the journey.
+                        </p>
+
+                    </div>
+
+                    <div class="allies-grid">
+
+                        <!-- ALLY 01 — DEGUZMAN -->
+                        <article class="ally-card" data-ally="deguzman">
+
+                            <div class="ally-topbar">
+                                <span class="ally-number">01</span>
+                                <span class="ally-status">𝕯𝕲</span>
+                            </div>
+
+                            <div class="ally-logo-wrap">
+                                <div class="ally-logo">
+                                    <span class="ally-logo-fallback"></span>
+                                    <img src="dgLogo.png" alt="Deguzman logo">
+                                </div>
+                            </div>
+
+                            <div class="ally-line"></div>
+
+                            <h3>𝕯𝖊𝖌𝖚𝖟𝖒𝖆𝖓</h3>
+                            <p>
+                                A respected connection built through loyalty, shared history,
+                                and the kind of bond that stays strong beyond a single chapter.
+                            </p>
+
+                            <div class="ally-footer">
+                                <span>RICALDE NETWORK</span>
+                                <span class="ally-arrow">↗</span>
+                            </div>
+                        </article>
+
+                        <!-- ALLY 02 — SUAVE MOB -->
+                        <article class="ally-card" data-ally="suave-mob">
+
+                            <div class="ally-topbar">
+                                <span class="ally-number">02</span>
+                                <span class="ally-status">𝕾𝖁𝕸</span>
+                            </div>
+
+                            <div class="ally-logo-wrap">
+                                <div class="ally-logo">
+                                    <span class="ally-logo-fallback"></span>
+                                    <img src="svmLogo.png" alt="Suave Mob logo">
+                                </div>
+                            </div>
+
+                            <div class="ally-line"></div>
+
+                            <h3>𝕾𝖚𝖆𝖛𝖊 𝕸𝖔𝖇</h3>
+                            <p>
+                                A trusted alliance defined by presence, respect, and a shared
+                                understanding that real connections are earned over time.
+                            </p>
+
+                            <div class="ally-footer">
+                                <span>RICALDE NETWORK</span>
+                                <span class="ally-arrow">↗</span>
+                            </div>
+                        </article>
+
+                        <!-- ALLY 03 — ALASKADOR -->
+                        <article class="ally-card" data-ally="alaskador">
+
+                            <div class="ally-topbar">
+                                <span class="ally-number">03</span>
+                                <span class="ally-status">𝕬𝖑𝖆𝖘</span>
+                            </div>
+
+                            <div class="ally-logo-wrap">
+                                <div class="ally-logo">
+                                    <span class="ally-logo-fallback"></span>
+                                    <img src="alasLogo.png" alt="Alaskador logo">
+                                </div>
+                            </div>
+
+                            <div class="ally-line"></div>
+
+                            <h3>𝕬𝖑𝖆𝖘𝖐𝖆𝖉𝖔𝖗</h3>
+                            <p>
+                                A connection carried by mutual respect, memorable moments,
+                                and a history worth keeping in the family archive.
+                            </p>
+
+                            <div class="ally-footer">
+                                <span>RICALDE NETWORK</span>
+                                <span class="ally-arrow">↗</span>
+                            </div>
+                        </article>
+
+                        <!-- ALLY 04 — ARABICCA -->
+                        <article class="ally-card" data-ally="arabicca">
+
+                            <div class="ally-topbar">
+                                <span class="ally-number">04</span>
+                                <span class="ally-status">1128</span>
+                            </div>
+
+                            <div class="ally-logo-wrap">
+                                <div class="ally-logo">
+                                    <span class="ally-logo-fallback"></span>
+                                    <img src="arabiccaLogo.png" alt="Arabicca logo">
+                                </div>
+                            </div>
+
+                            <div class="ally-line"></div>
+
+                            <h3>𝕬𝖗𝖆𝖇𝖎𝖈𝖈𝖆</h3>
+                            <p>
+                                A meaningful connection woven into the wider Ricalde story,
+                                representing family ties, trust, and shared identity.
+                            </p>
+
+                            <div class="ally-footer">
+                                <span>RICALDE NETWORK</span>
+                                <span class="ally-arrow">↗</span>
+                            </div>
+                        </article>
+
+                        <!-- ALLY 05 — ESPIRITU SANTO -->
+                        <article class="ally-card" data-ally="espiritu-santo">
+
+                            <div class="ally-topbar">
+                                <span class="ally-number">05</span>
+                                <span class="ally-status">𝕰𝕾𝕻</span>
+                            </div>
+
+                            <div class="ally-logo-wrap">
+                                <div class="ally-logo">
+                                    <span class="ally-logo-fallback"></span>
+                                    <img src="espLogo.gif" alt="Espiritu Santo logo">
+                                </div>
+                            </div>
+
+                            <div class="ally-line"></div>
+
+                            <h3>𝕰𝖘𝖕𝖎𝖗𝖎𝖙𝖚 𝕾𝖆𝖓𝖙𝖔</h3>
+                            <p>
+                                A connection that adds another branch to the story — built on
+                                respect, shared memories, and a bond that keeps expanding.
+                            </p>
+
+                            <div class="ally-footer">
+                                <span>RICALDE NETWORK</span>
+                                <span class="ally-arrow">↗</span>
+                            </div>
+                        </article>
+
+                        <!-- ALLY 06 — VENDETTA CARTEL -->
+                        <article class="ally-card" data-ally="vendetta-cartel">
+
+                            <div class="ally-topbar">
+                                <span class="ally-number">06</span>
+                                <span class="ally-status">𝖁𝕮</span>
+                            </div>
+
+                            <div class="ally-logo-wrap">
+                                <div class="ally-logo">
+                                    <span class="ally-logo-fallback"></span>
+                                    <img src="vcLogo.png" alt="Vendetta Cartel logo">
+                                </div>
+                            </div>
+
+                            <div class="ally-line"></div>
+
+                            <h3>𝖁𝖊𝖓𝖉𝖊𝖙𝖙𝖆 𝕮𝖆𝖗𝖙𝖊𝖑</h3>
+                            <p>
+                                A strong outside connection with its own identity — another
+                                name standing beside the Ricalde network with respect.
+                            </p>
+
+                            <div class="ally-footer">
+                                <span>RICALDE NETWORK</span>
+                                <span class="ally-arrow">↗</span>
+                            </div>
+                        </article>
+
+                        <!-- TO ADD ANOTHER ALLY: copy any .ally-card, then change the number, logo file, name, and message. -->
+
+                    </div>
+
+                </section>
+
+                <!-- =====================================================
+                     MEMORIES
+                ===================================================== -->
+
+                <section
+                    class="section memories-section"
+                    id="memories"
+                >
+
+                    <div class="section-heading memories-heading">
+
+                        <p class="small-label">
+                            VISUAL ARCHIVE
+                        </p>
+
+                        <h2>
+                            Ricalde
+                            <span>memories.</span>
+                        </h2>
+
+                        <p class="section-note">
+                            Drag the archive left or right. Click any memory to open it.
+                        </p>
+
+                    </div>
+
+                    <div class="memory-window" id="memoryWindow">
+
+                        <div
+                            class="memory-track"
+                            id="memoryTrack"
+                        >
+
+                            <!-- MEMORY 01 -->
+                            <article class="memory-card gallery-item" data-gallery-image="gallery1.jpg" data-gallery-title="Ricalde Familia — Memory 01">
+                                <div class="memory-image-wrap">
+                                    <img src="1.png" alt="Ricalde Memory 01">
+                                    <div class="memory-overlay"><span></span></div>
+                                </div>
+                                <div class="memory-meta"><span>01</span><strong></strong></div>
+                            </article>
+
+                            <!-- MEMORY 02 -->
+                            <article class="memory-card gallery-item" data-gallery-image="gallery2.jpg" data-gallery-title="Ricalde Familia — Memory 02">
+                                <div class="memory-image-wrap">
+                                    <img src="2.png" alt="Ricalde Memory 02">
+                                    <div class="memory-overlay"><span></span></div>
+                                </div>
+                                <div class="memory-meta"><span>02</span><strong></strong></div>
+                            </article>
+
+                            <!-- MEMORY 03 -->
+                            <article class="memory-card gallery-item" data-gallery-image="gallery3.jpg" data-gallery-title="Ricalde Familia — Memory 03">
+                                <div class="memory-image-wrap">
+                                    <img src="3.png" alt="Ricalde Memory 03">
+                                    <div class="memory-overlay"><span></span></div>
+                                </div>
+                                <div class="memory-meta"><span>03</span><strong></strong></div>
+                            </article>
+
+                            <!-- MEMORY 04 -->
+                            <article class="memory-card gallery-item" data-gallery-image="gallery4.jpg" data-gallery-title="Ricalde Familia — Memory 04">
+                                <div class="memory-image-wrap">
+                                    <img src="4.png" alt="Ricalde Memory 04">
+                                    <div class="memory-overlay"><span></span></div>
+                                </div>
+                                <div class="memory-meta"><span>04</span><strong></strong></div>
+                            </article>
+
+                            <!-- MEMORY 05 — ADD YOUR PHOTO -->
+                            <article class="memory-card gallery-item" data-gallery-image="gallery5.jpg" data-gallery-title="Ricalde Familia — Memory 05">
+                                <div class="memory-image-wrap">
+                                    <img src="5.png" alt="Ricalde Memory 05">
+                                    <div class="memory-overlay"><span></span></div>
+                                </div>
+                                <div class="memory-meta"><span>05</span><strong></strong></div>
+                            </article>
+
+                            <!-- MEMORY 06 — ADD YOUR PHOTO -->
+                            <article class="memory-card gallery-item" data-gallery-image="gallery6.jpg" data-gallery-title="Ricalde Familia — Memory 06">
+                                <div class="memory-image-wrap">
+                                    <img src="6.png" alt="Ricalde Memory 06">
+                                    <div class="memory-overlay"><span></span></div>
+                                </div>
+                                <div class="memory-meta"><span>06</span><strong></strong></div>
+                            </article>
+
+                            <!-- MEMORY 07 — ADD YOUR PHOTO -->
+                            <article class="memory-card gallery-item" data-gallery-image="gallery7.jpg" data-gallery-title="Ricalde Familia — Memory 07">
+                                <div class="memory-image-wrap">
+                                    <img src="7.png" alt="Ricalde Memory 07">
+                                    <div class="memory-overlay"><span></span></div>
+                                </div>
+                                <div class="memory-meta"><span>07</span><strong></strong></div>
+                            </article>
+
+                            <!-- MEMORY 08 — ADD YOUR PHOTO -->
+                            <article class="memory-card gallery-item" data-gallery-image="gallery8.jpg" data-gallery-title="Ricalde Familia — Memory 08">
+                                <div class="memory-image-wrap">
+                                    <img src="8.png" alt="Ricalde Memory 08">
+                                    <div class="memory-overlay"><span></span></div>
+                                </div>
+                                <div class="memory-meta"><span>08</span><strong></strong></div>
+                            </article>
+
+                            <!-- MEMORY 09 — ADD YOUR PHOTO -->
+                            <article class="memory-card gallery-item" data-gallery-image="gallery9.jpg" data-gallery-title="Ricalde Familia — Memory 09">
+                                <div class="memory-image-wrap">
+                                    <img src="9.png" alt="Ricalde Memory 09">
+                                    <div class="memory-overlay"><span></span></div>
+                                </div>
+                                <div class="memory-meta"><span>09</span><strong></strong></div>
+                            </article>
+
+                            <!-- MEMORY 10 — ADD YOUR PHOTO -->
+                        <!--    <article class="memory-card gallery-item" data-gallery-image="gallery10.jpg" data-gallery-title="Ricalde Familia — Memory 10">
+                                <div class="memory-image-wrap">
+                                    <img src="gallery10.jpg" alt="Ricalde Memory 10">
+                                    <div class="memory-overlay"><span></span></div>
+                                </div>
+                                <div class="memory-meta"><span>10</span><strong></strong></div>
+                            </article> -->
+
+                            <!-- MEMORY 11 — ADD YOUR PHOTO -->
+                        <!--    <article class="memory-card gallery-item" data-gallery-image="gallery11.jpg" data-gallery-title="Ricalde Familia — Memory 11">
+                                <div class="memory-image-wrap">
+                                    <img src="gallery11.jpg" alt="Ricalde Memory 11">
+                                    <div class="memory-overlay"><span></span></div>
+                                </div>
+                                <div class="memory-meta"><span>11</span><strong></strong></div>
+                            </article> -->
+
+                            <!-- MEMORY 12 — ADD YOUR PHOTO -->
+                        <!--    <article class="memory-card gallery-item" data-gallery-image="gallery12.jpg" data-gallery-title="Ricalde Familia — Memory 12">
+                                <div class="memory-image-wrap">
+                                    <img src="gallery12.jpg" alt="Ricalde Memory 12">
+                                    <div class="memory-overlay"><span></span></div>
+                                </div>
+                                <div class="memory-meta"><span>12</span><strong></strong></div>
+                            </article> -->
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <!-- =====================================================
+                     CITIES
+                ===================================================== -->
+
+                <section
+                    class="section cities-section"
+                    id="cities"
+                >
+
+                    <div class="section-heading center-heading">
+
+                        <p class="small-label">
+                            TERRITORY
+                        </p>
+
+                        <h2>
+                            Cities
+                            <span>& territories.</span>
+                        </h2>
+
+                        <p class="section-note center-note">
+                            Wherever the family goes, the name follows.
+                        </p>
+
+                    </div>
+
+                    <div class="cities-grid">
+
+                        <!-- CITY 01 -->
+
+                        <article class="city-card">
+
+                            <div class="city-logo">
+
+                                <img
+                                    src="codLogo.png"
+                                    alt="COD logo"
+                                >
+
+                            </div>
+
+                            <span class="city-index">
+                                01
+                            </span>
+
+                            <h3>
+                                City Of Dreams
+                            </h3>
+
+                            <p>
+                                The home ground.
+                            </p>
+
+                        </article>
+
+                        <!-- CITY 02 -->
+
+                        <article class="city-card">
+
+                            <div class="city-logo">
+
+                                <img
+                                    src="afnyLogo.gif"
+                                    alt="AFNY logo"
+                                >
+
+                            </div>
+
+                            <span class="city-index">
+                                02
+                            </span>
+
+                            <h3>
+                                AFNTY RP
+                            </h3>
+
+                            <p>
+                                Another chapter.
+                            </p>
+
+                        </article>
+
+                        <!-- CITY 03 -->
+
+                        <article class="city-card">
+
+                            <div class="city-logo">
+
+                                <img
+                                    src="dktLogo.png"
+                                    alt="DKT logo"
+                                >
+
+                            </div>
+
+                            <span class="city-index">
+                                03
+                            </span>
+
+                            <h3>
+                                DKT
+                            </h3>
+
+                            <p>
+                                Wherever the family goes.
+                            </p>
+
+                        </article>
+
+                    </div>
+
+                </section>
+
+        </main>
+
+        <!-- =====================================================
+             FOOTER
+        ===================================================== -->
+
+        <footer>
+
+            <div class="footer-container">
+
+                <div>
+
+                    <strong>
+                        RICALDE FAMILIA
+                    </strong>
+
+                    <p>
+                        ©
+                        <span id="year"></span>
+                        All rights reserved.
+                    </p>
+
+                </div>
+
+                <div class="social-links">
+
+                    <a href="#">
+                        RICALDE
+                    </a>
+
+                    <a href="#">
+                        ON
+                    </a>
+
+                    <a href="#">
+                        TOP
+                    </a>
+
+                </div>
+
+            </div>
+
+            <div class="developer-credit">
+
+                DEVELOPED BY:
+
+                <strong>
+                    GAB RICALDE
+                </strong>
+
+            </div>
+
+        </footer>
+
+        <!-- =====================================================
+             AUDIO
+        ===================================================== -->
+
+        <audio
+            id="memberAudio"
+            preload="auto"
+        ></audio>
+
+        <script src="script.js"></script>
+
+    </body>
+</html>
